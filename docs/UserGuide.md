@@ -161,7 +161,7 @@ Examples:
 
 ### Searching for clients: `search`
 
-Finds clients whose names contain any of the given keywords.
+Finds clients whose names contain all the given keywords.
 
 Format: `search [n/NAME] [p/PHONE_NUMBER] [y/TYPE]`
 
@@ -378,7 +378,7 @@ Format: `restore f/FILE`
 * `FILE` is the name of a `.json` file in the `backup` folder beside your data file, for example
   `restore f/before-clearing.json`. It must not contain a folder part.
 * The whole backup is checked before anything changes. A name that is not in the folder is rejected with
-  `No backup file named <name> in the data folder.`, and a file that is not a client list is rejected with
+  `No backup named <name> in data/backup. Backup names end in .json, for example f/before-july.json.`, and a file that is not a client list is rejected with
   `That file is not a valid client list, so nothing was restored.`
 * A successful restore shows `Restored N clients from <name>`, clears both filters so the restored clients
   are visible, and is saved automatically.
@@ -440,12 +440,17 @@ PropTrack data is saved automatically as a JSON file `[JAR file location]/data/a
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
 If the file contains invalid client or appointment data, PropTrack rejects the whole file and starts empty.
-It attempts to preserve the unreadable file under a name ending in `.corrupt-TIMESTAMP`, and the result box
+It attempts to preserve the unreadable file under a name ending in `.corrupt-TIMESTAMP` (with a numeric suffix
+if that name is already taken), and the result box
 names both the data file and the preserved copy, or says that the rename failed. Back up the data file
 before editing it.<br>
 Names that differ only in letter case or normalized spaces count as duplicate records in saved files too.
 If an older version allowed such records, back up the file and give the clients distinct names in that version
 before upgrading; they are not merged automatically.<br>
+For duplicate names, the startup notice explains that comparison ignores letter case and normalized spaces.
+To recover, close PropTrack and keep an untouched backup of the preserved file. In a separate copy, give the
+conflicting clients distinct names, keeping their IDs and array positions unchanged. Put the corrected copy
+at the original data-file path named in the notice, then restart PropTrack.<br>
 Client `clientId` fields store stable numeric IDs; do not duplicate IDs or decrease the `nextClientId` counter.<br>
 Appointment `clientIndex` fields refer to positions in the saved client array, rather than stable client IDs.
 Reordering that array by hand without updating those references can associate appointments with the wrong clients.
